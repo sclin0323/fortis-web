@@ -21,6 +21,12 @@
         .factory('userService', function() {
             return {
                 addUserDevice: function($scope, $http) {
+                	// 檢查是否達新增上限
+		            if ($scope.userDevices.length >= $scope.deviceLimit) {
+		                alert('申請數量已達上限。');
+		                return;
+		            }
+                
                     // Post Add by Ajax
                     jQuery('#ajaxWaitingModal').modal("show");
                     $http({
@@ -120,11 +126,7 @@
 
         // Submit 新增 or 修改
         $scope.submit = function() {
-            // 檢查是否達新增上限
-            if ($scope.userDevices.length >= $scope.deviceLimit) {
-                alert('申請數量已達上限。');
-                return;
-            }
+            
 
             // 檢查網卡格式
             var macRegex = new RegExp("^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$");
