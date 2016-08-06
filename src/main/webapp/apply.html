@@ -147,15 +147,17 @@
         // Delete UserDevice
         $scope.deleteUserDevice = function(deleteIndex) {
             var deviceName = $scope.userDevices[deleteIndex]['deviceName'];
-
+			var logUid = $scope.applicantId;
+			var logName = $scope.applicantName;
+			
             jQuery('#ajaxWaitingModal').modal("show");
             $http({
                 method: 'DELETE',
-                url: '/web/user/delete2',
+                url: '/web/user/delete',
                 params: {
                     'deviceName': deviceName,
-                    'logUid': $scope.applicantId,
-                    'logName': $scope.applicantName
+                    'logUid': logUid,
+                    'logName': logName
                 }
             }).then(function successCallback(response) {
                 console.info(response);

@@ -82,12 +82,12 @@ public class UserController extends BaseController {
 		//ssoCmd.setGivenName("NAME");
 		//ssoCmd.setTitle("TITLE");
 		
+		
 		SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
 		if (ssoCmd == null) {
 			
 			return getFailureModelAndView(model, "尚未完成登入驗證，請從SSO e-Portal 登入連線。");
 		}
-		
 		 
 		Map<String, Object> sysSetting = sysSettingService.fetchById("SETTING001");
 		if (sysSetting == null) {
@@ -189,6 +189,8 @@ public class UserController extends BaseController {
 		String deviceName = request.getParameter("deviceName");
 		String deviceGroup = (String) userDeviceService.fetchById(deviceName).get("deviceGroup");
 
+		System.out.println(logUid+" "+logName);
+		
 		try {
 			restTemplateService.unselectConfigUserDeviceGroups(deviceName, deviceGroup);
 			restTemplateService.deleteConfigUserDevice(deviceName);
