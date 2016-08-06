@@ -150,6 +150,9 @@
 			var logUid = $scope.applicantId;
 			var logName = $scope.applicantName;
 			
+			console.info(deleteIndex)
+			console.info(deviceName)
+			
             jQuery('#ajaxWaitingModal').modal("show");
             $http({
                 method: 'DELETE',
@@ -162,7 +165,7 @@
             }).then(function successCallback(response) {
                 console.info(response);
                 // 刪除資料
-                $scope.userDevices.splice(this.deleteIndex, 1);
+                $scope.userDevices.splice(deleteIndex, 1);
 
                 // 關閉等待視窗
                 jQuery('#ajaxWaitingModal').modal("hide");
@@ -174,6 +177,7 @@
                 jQuery('#ajaxWaitingModal').modal("hide");
 
             });
+            
         }
 
         // 設定為 修改模式
