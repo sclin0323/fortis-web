@@ -146,8 +146,7 @@ public class UserController extends BaseController {
 		Map map = userDeviceService.create(cmd);
 		
 		// Log
-		SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
-		userDeviceLogService.saveUserDeviceLog("CREATE", ssoCmd.getCn(), ssoCmd.getGivenName(), cmd.getDeviceName());
+		userDeviceLogService.saveUserDeviceLog("CREATE", cmd.getApplicantId(), cmd.getApplicantName(), cmd.getDeviceName());
 
 
 		return getSuccessModelAndView(model, map);
@@ -178,14 +177,15 @@ public class UserController extends BaseController {
 		Map map = userDeviceService.update(cmd);
 		
 		//Log
-		SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
-		userDeviceLogService.saveUserDeviceLog("UPDATE", ssoCmd.getCn(), ssoCmd.getGivenName(), cmd.getDeviceName());
+		userDeviceLogService.saveUserDeviceLog("UPDATE", cmd.getUpdUid(), cmd.getUpdName(), cmd.getDeviceName());
 
 		return getSuccessModelAndView(model, map);
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public @ResponseBody ModelAndView delete(ModelMap model, HttpServletRequest request) {
+		String logUid = request.getParameter("logUid");
+		String logName = request.getParameter("logName");
 		String deviceName = request.getParameter("deviceName");
 		String deviceGroup = (String) userDeviceService.fetchById(deviceName).get("deviceGroup");
 
@@ -200,8 +200,7 @@ public class UserController extends BaseController {
 		}
 
 		//Log
-		SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
-		userDeviceLogService.saveUserDeviceLog("DELETE", ssoCmd.getCn(), ssoCmd.getGivenName(), deviceName);
+		userDeviceLogService.saveUserDeviceLog("DELETE", logUid, logName, deviceName);
 		
 		Map map = userDeviceService.delete(deviceName);
 		

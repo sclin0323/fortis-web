@@ -151,9 +151,11 @@
             jQuery('#ajaxWaitingModal').modal("show");
             $http({
                 method: 'DELETE',
-                url: '/web/user/delete',
+                url: '/web/user/delete2',
                 params: {
-                    'deviceName': deviceName
+                    'deviceName': deviceName,
+                    'logUid': $scope.applicantId,
+                    'logName': $scope.applicantName
                 }
             }).then(function successCallback(response) {
                 console.info(response);
