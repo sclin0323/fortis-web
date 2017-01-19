@@ -6,12 +6,10 @@
 
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="url" value="jdbc:mysql://140.128.71.35:3306/testdb">
-		<!-- <property name="url" value="jdbc:mysql://192.168.142.163:3306/fortisdb">  -->
+		<property name="url" value="${fortisdb.url}">
 		</property>
-		<property name="username" value="root"></property>
-		<!--<property name="password" value="hYtF0ItYca*N"></property> -->
-		 <property name="password" value="IMg>fpt_7tSd"></property>
+		<property name="username" value="${fortisdb.username}"></property>
+		<property name="password" value="${fortisdb.password}"></property>
 	</bean>
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
