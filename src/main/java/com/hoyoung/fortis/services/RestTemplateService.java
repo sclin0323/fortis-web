@@ -6,6 +6,12 @@ import com.hoyoung.fortis.python.PythonResponse;
 
 public interface RestTemplateService {
 	
+	public PythonResponse editConfigUserLocal(String account,String password);
+	
+	public PythonResponse deleteConfigUserLocal(String account);
+	
+	public PythonResponse editConfigUserGroup(String account,String userGroup);
+	
 	public PythonResponse reenableSystemInterface();
 	
 	public PythonResponse showUserDeviceGroupByUserDeviceGroup(String deviceGroup);

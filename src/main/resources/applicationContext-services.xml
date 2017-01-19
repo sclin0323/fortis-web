@@ -17,11 +17,17 @@
 	
 	<bean id="restTemplateService" class="com.hoyoung.fortis.services.RestTemplateServiceImpl"></bean>
 	
-	
-	<bean id="fortinetUserDeviceService" class="com.hoyoung.fortis.services.FortinetUserDeviceServiceImpl"></bean>
+	<!-- System -->
 	<bean id="sysUserService" class="com.hoyoung.fortis.services.SysUserServiceImpl"></bean>
 	<bean id="sysSettingService" class="com.hoyoung.fortis.services.SysSettingServiceImpl"></bean>
+	<bean id="sysEmailService" class="com.hoyoung.fortis.services.SysEmailServiceImpl"></bean>
+	
+	<!-- Guest -->
+	<bean id="guestService" class="com.hoyoung.fortis.services.GuestServiceImpl"></bean>
+	
+	
 	<bean id="userDeviceLogService" class="com.hoyoung.fortis.services.UserDeviceLogServiceImpl"></bean>
+	<bean id="userDeviceSyncService" class="com.hoyoung.fortis.services.UserDeviceSyncServiceImpl"></bean>
 	<bean id="userDeviceService" class="com.hoyoung.fortis.services.UserDeviceServiceImpl">
 		<property name="searchWordSql">
 			<value>

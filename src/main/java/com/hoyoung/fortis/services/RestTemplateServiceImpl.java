@@ -91,6 +91,69 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 	}
 	
 	@Override
+	public PythonResponse editConfigUserLocal(String account, String password) {
+		SysSetting setting = (SysSetting) fortisDAO.findById(SysSetting.class, "SETTING001");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromHttpUrl(urlPrefix+"editConfigUserLocal/")
+				.queryParam("ip", setting.getHostname()).queryParam("port", setting.getPort())
+				.queryParam("userName", setting.getLoginName()).queryParam("password", setting.getPassword())
+				.queryParam("account", account).queryParam("userPassword", password);
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		HttpEntity<PythonResponse> pythonResponse = rt.exchange(builder.build().encode().toUri(), HttpMethod.GET,
+				entity, PythonResponse.class);
+
+		return pythonResponse.getBody();
+	}
+	
+	@Override
+	public PythonResponse deleteConfigUserLocal(String account) {
+		SysSetting setting = (SysSetting) fortisDAO.findById(SysSetting.class, "SETTING001");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromHttpUrl(urlPrefix+"deleteConfigUserLocal/")
+				.queryParam("ip", setting.getHostname()).queryParam("port", setting.getPort())
+				.queryParam("userName", setting.getLoginName()).queryParam("password", setting.getPassword())
+				.queryParam("account", account);
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		HttpEntity<PythonResponse> pythonResponse = rt.exchange(builder.build().encode().toUri(), HttpMethod.GET,
+				entity, PythonResponse.class);
+
+		return pythonResponse.getBody();
+	}
+
+	@Override
+	public PythonResponse editConfigUserGroup(String account, String userGroup) {
+		SysSetting setting = (SysSetting) fortisDAO.findById(SysSetting.class, "SETTING001");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+		UriComponentsBuilder builder = UriComponentsBuilder
+				.fromHttpUrl(urlPrefix+"editConfigUserGroup/")
+				.queryParam("ip", setting.getHostname()).queryParam("port", setting.getPort())
+				.queryParam("userName", setting.getLoginName()).queryParam("password", setting.getPassword())
+				.queryParam("account", account).queryParam("userGroup", userGroup);
+
+		HttpEntity<?> entity = new HttpEntity<>(headers);
+
+		HttpEntity<PythonResponse> pythonResponse = rt.exchange(builder.build().encode().toUri(), HttpMethod.GET,
+				entity, PythonResponse.class);
+
+		return pythonResponse.getBody();
+	}
+	
+	@Override
 	public PythonResponse editConfigUserDevice(String deviceName, String macAddress) {
 
 		SysSetting setting = (SysSetting) fortisDAO.findById(SysSetting.class, "SETTING001");
@@ -221,6 +284,8 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 		
 		return true;
 	}
+
+	
 
 
 

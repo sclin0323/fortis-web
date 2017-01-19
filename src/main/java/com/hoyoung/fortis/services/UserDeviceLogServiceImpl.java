@@ -5,10 +5,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hoyoung.fortis.dao.UserDevice;
 import com.hoyoung.fortis.dao.UserDeviceLog;
@@ -17,6 +22,44 @@ import com.hoyoung.fortis.dao.UserDeviceLog;
 public class UserDeviceLogServiceImpl extends BaseServiceImpl implements UserDeviceLogService {
 	final static Logger log = Logger.getLogger(UserDeviceLogServiceImpl.class);
 
+	@Override
+	public List fetchBySearchWord(String searchWord, int page, int start, int limit) {
+		String word = "%" + searchWord + "%";
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getEntityClass());
+		detachedCriteria.add(Restrictions.or(
+				Restrictions.like("method", word), 
+				Restrictions.like("deviceName", word), 
+				Restrictions.like("applicantId", word), 
+				Restrictions.like("applicantName", word), 
+				Restrictions.like("macAddress", word), 
+				Restrictions.like("deviceGroup", word), 
+				Restrictions.like("logUid", word),
+				Restrictions.like("logName", word)));
+		detachedCriteria.addOrder(Order.desc("logId"));
+
+		List dataList = fortisDAO.findByCriteria(detachedCriteria, start, limit);
+
+		return toMapList(dataList, true);
+	}
+
+	@Transactional(readOnly = true)
+	public long fetchCountBySearchWord(String searchWord, int page, int start, int limit) {
+
+		String word = "%" + searchWord + "%";
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getEntityClass());
+		detachedCriteria.add(Restrictions.or(
+				Restrictions.like("method", word), 
+				Restrictions.like("deviceName", word), 
+				Restrictions.like("applicantId", word), 
+				Restrictions.like("applicantName", word), 
+				Restrictions.like("macAddress", word), 
+				Restrictions.like("deviceGroup", word), 
+				Restrictions.like("logUid", word),
+				Restrictions.like("logName", word)));
+
+		return fortisDAO.fetchCountByCriteria(detachedCriteria);
+	}
+	
 	@Override
 	public Map<String, Object> saveUserDeviceLog(String method,String logUid, String logName, String deviceName) {
 		
@@ -61,7 +104,7 @@ public class UserDeviceLogServiceImpl extends BaseServiceImpl implements UserDev
 			m.put("logUid", o.getLogUid());
 			m.put("logName", o.getLogName());
 			m.put("logDate", toDateString(o.getLogDate()));
-			m.put("logTime", toDateString(o.getLogTime()));
+			m.put("logTime", toTimeString(o.getLogTime()));
 			
 			m.put("deviceName", o.getDeviceName());
 			m.put("deviceGroup", o.getDeviceGroup());
@@ -80,9 +123,5 @@ public class UserDeviceLogServiceImpl extends BaseServiceImpl implements UserDev
 	protected Class getEntityClass() {
 		return UserDeviceLog.class;
 	}
-
-
-
-
 
 }

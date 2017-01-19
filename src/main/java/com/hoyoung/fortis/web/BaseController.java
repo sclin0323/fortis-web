@@ -143,4 +143,12 @@ public abstract class BaseController {
 		return "none-auth-group-"+i;
 	}
 	
+	// 隨機 選取一個 Guest Group
+		protected String getGuestGroupByRandom() {
+			Random generator = new Random(); 
+			int i = generator.nextInt(10);
+			
+			return "none-auth-group-"+i;
+		}
+	
 }

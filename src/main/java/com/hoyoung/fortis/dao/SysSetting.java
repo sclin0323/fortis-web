@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
  * SysSetting entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "SYS_SETTING", catalog = "fortisdb")
+@Table(name = "SYS_SETTING", catalog = "testdb")
 
 public class SysSetting implements java.io.Serializable {
 
@@ -34,6 +34,9 @@ public class SysSetting implements java.io.Serializable {
 	private String updName;
 	private Date updDate;
 	private Time updTime;
+	private Integer guestLimit;
+	private Time guestStart;
+	private Time guestEnd;
 
 	// Constructors
 
@@ -43,7 +46,8 @@ public class SysSetting implements java.io.Serializable {
 
 	/** minimal constructor */
 	public SysSetting(String sysSettingId, String name, String hostname, Integer port, String loginName,
-			String password, Integer deviceLimit, String crtUid, String crtName, Date crtDate, Time crtTime) {
+			String password, Integer deviceLimit, String crtUid, String crtName, Date crtDate, Time crtTime,
+			Integer guestLimit, Time guestStart, Time guestEnd) {
 		this.sysSettingId = sysSettingId;
 		this.name = name;
 		this.hostname = hostname;
@@ -55,12 +59,16 @@ public class SysSetting implements java.io.Serializable {
 		this.crtName = crtName;
 		this.crtDate = crtDate;
 		this.crtTime = crtTime;
+		this.guestLimit = guestLimit;
+		this.guestStart = guestStart;
+		this.guestEnd = guestEnd;
 	}
 
 	/** full constructor */
 	public SysSetting(String sysSettingId, String name, String hostname, Integer port, String loginName,
 			String password, Integer deviceLimit, String crtUid, String crtName, Date crtDate, Time crtTime,
-			String updUid, String updName, Date updDate, Time updTime) {
+			String updUid, String updName, Date updDate, Time updTime, Integer guestLimit, Time guestStart,
+			Time guestEnd) {
 		this.sysSettingId = sysSettingId;
 		this.name = name;
 		this.hostname = hostname;
@@ -76,6 +84,9 @@ public class SysSetting implements java.io.Serializable {
 		this.updName = updName;
 		this.updDate = updDate;
 		this.updTime = updTime;
+		this.guestLimit = guestLimit;
+		this.guestStart = guestStart;
+		this.guestEnd = guestEnd;
 	}
 
 	// Property accessors
@@ -231,6 +242,36 @@ public class SysSetting implements java.io.Serializable {
 
 	public void setUpdTime(Time updTime) {
 		this.updTime = updTime;
+	}
+
+	@Column(name = "GUEST_LIMIT", nullable = false)
+
+	public Integer getGuestLimit() {
+		return this.guestLimit;
+	}
+
+	public void setGuestLimit(Integer guestLimit) {
+		this.guestLimit = guestLimit;
+	}
+
+	@Column(name = "GUEST_START", nullable = false, length = 8)
+
+	public Time getGuestStart() {
+		return this.guestStart;
+	}
+
+	public void setGuestStart(Time guestStart) {
+		this.guestStart = guestStart;
+	}
+
+	@Column(name = "GUEST_END", nullable = false, length = 8)
+
+	public Time getGuestEnd() {
+		return this.guestEnd;
+	}
+
+	public void setGuestEnd(Time guestEnd) {
+		this.guestEnd = guestEnd;
 	}
 
 }

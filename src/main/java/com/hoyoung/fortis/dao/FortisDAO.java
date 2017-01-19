@@ -11,6 +11,7 @@ import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.slf4j.Logger;
@@ -85,7 +86,7 @@ public class FortisDAO {
 	public List findByProperty(Class clazz, String propertyName, Object value) {
 		log.debug("finding " + clazz.getSimpleName() + " instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from "+clazz.getSimpleName()+" as model where model." + propertyName + "= ?";
+			String queryString = "from "+clazz.getSimpleName()+" as model where model." + propertyName + " = ?";
 			Query queryObject = getCurrentSession().createQuery(queryString);
 			queryObject.setParameter(0, value);
 			return queryObject.list();
@@ -95,7 +96,7 @@ public class FortisDAO {
 		}
 	}
 	
-	// 修改 by Dirty
+	// 新增或修改 by Dirty
 	public void attachDirty(Object instance) {
 		log.debug("attaching dirty " + instance.getClass().getSimpleName() + " instance");
 		try {
@@ -106,8 +107,20 @@ public class FortisDAO {
 			throw re;
 		}
 	}
+	
+	
+	public void attachDirtyByList(List<UserDeviceSync> userDeviceSyncs) {
+		Session session = getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		tx = session.beginTransaction();
+		
+		for(Object o : userDeviceSyncs)
+		session.saveOrUpdate(o);
+		
+		tx.commit();
+	}
 
-	// 修改 by Clean
+	//  Clean Data
 	public void attachClean(Object instance) {
 		log.debug("attaching clean " + instance.getClass().getSimpleName() + " instance");
 		try {

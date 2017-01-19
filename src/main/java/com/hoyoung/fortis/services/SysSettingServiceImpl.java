@@ -50,6 +50,10 @@ public class SysSettingServiceImpl extends BaseServiceImpl implements SysSetting
 		o.setPassword(cmd.getPassword());
 		o.setDeviceLimit(cmd.getDeviceLimit());
 		
+		o.setGuestLimit(cmd.getGuestLimit());
+		o.setGuestStart(cmd.getGuestStart());
+		o.setGuestEnd(cmd.getGuestEnd());
+		
 		o.setUpdUid(cmd.getUpdUid());
 		o.setUpdName(cmd.getUpdName());
 		o.setUpdDate(new Date());
@@ -64,7 +68,7 @@ public class SysSettingServiceImpl extends BaseServiceImpl implements SysSetting
 	public Map<String, Object> delete(Object obj) {		
 		String objectId = (String) obj;
 
-		UserDevice o = (UserDevice) fortisDAO.findById(getEntityClass(), objectId);
+		SysSetting o = (SysSetting) fortisDAO.findById(getEntityClass(), objectId);
 		if(o == null) {
 			return null;
 		}
@@ -87,6 +91,9 @@ public class SysSettingServiceImpl extends BaseServiceImpl implements SysSetting
 			m.put("password", o.getPassword());
 			m.put("deviceLimit", o.getDeviceLimit());
 			
+			m.put("guestLimit", o.getGuestLimit());
+			m.put("guestStart", toTimeString(o.getGuestStart()));
+			m.put("guestEnd", toTimeString(o.getGuestEnd()));
 			
 			m.put("crtUid", o.getCrtUid());
 			m.put("crtName", o.getCrtName());
@@ -107,15 +114,13 @@ public class SysSettingServiceImpl extends BaseServiceImpl implements SysSetting
 	}
 
 	@Override
-	public String validateCreate(Object obj) {
-		// TODO Auto-generated method stub
-		return null;
+	public void validateCreate(Object obj) {
+		
 	}
 
 	@Override
-	public String validateUpdate(Object obj) {
-		// TODO Auto-generated method stub
-		return null;
+	public void validateUpdate(Object obj) {
+		
 	}
 
 }

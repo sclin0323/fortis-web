@@ -6,10 +6,12 @@
 
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="url" value="jdbc:mysql://140.128.71.35:3306/fortisdb">
+		<property name="url" value="jdbc:mysql://140.128.71.35:3306/testdb">
+		<!-- <property name="url" value="jdbc:mysql://192.168.142.163:3306/fortisdb">  -->
 		</property>
 		<property name="username" value="root"></property>
-		<property name="password" value="IMg>fpt_7tSd"></property>
+		<!--<property name="password" value="hYtF0ItYca*N"></property> -->
+		 <property name="password" value="IMg>fpt_7tSd"></property>
 	</bean>
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -21,7 +23,7 @@
 				<prop key="hibernate.dialect">
 					org.hibernate.dialect.MySQLDialect
 				</prop>
-				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">false</prop>
 				<prop key="hibernate.autoReconnect">true</prop>
 				<prop key="hibernate.autoReconnectForPools">true</prop>
@@ -33,8 +35,11 @@
 				<value>com.hoyoung.fortis.dao.UserDevice</value>
 				<value>com.hoyoung.fortis.dao.SysSetting</value>
 				<value>com.hoyoung.fortis.dao.SysUser</value>
-				<value>com.hoyoung.fortis.dao.FortinetUserDevice</value>
+				<value>com.hoyoung.fortis.dao.UserDeviceSync</value>
 				<value>com.hoyoung.fortis.dao.UserDeviceLog</value>
+				<value>com.hoyoung.fortis.dao.SysEmail</value>
+				<value>com.hoyoung.fortis.dao.GuestLog</value>
+				<value>com.hoyoung.fortis.dao.Guest</value>
 			</list>
 		</property>
 	</bean>

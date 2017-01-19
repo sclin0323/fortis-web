@@ -96,7 +96,7 @@ public class SysUserServiceImpl extends BaseServiceImpl implements SysUserServic
 	}
 
 	@Override
-	public String validateUpdate(Object obj) {
+	public void validateUpdate(Object obj) {
 		SysUserCommand cmd = (SysUserCommand) obj;
 		
 		// 判斷是否有需要修改密碼
@@ -104,11 +104,10 @@ public class SysUserServiceImpl extends BaseServiceImpl implements SysUserServic
 			// 需要判斷原密碼輸入是否正確
 			SysUser o = (SysUser) fortisDAO.findById(getEntityClass(), cmd.getSysUserId());
 			if(o.getPassword().equals(cmd.getPassword()) == false) {
-				return "原密碼密碼錯誤，請重新確認。";
+				throw new IllegalArgumentException("原密碼密碼錯誤，請重新確認。");
 			}
 		}
 		
-		return null;
 	}
 	
 	@Override
@@ -177,9 +176,8 @@ public class SysUserServiceImpl extends BaseServiceImpl implements SysUserServic
 	}
 
 	@Override
-	public String validateCreate(Object obj) {
-		// TODO Auto-generated method stub
-		return null;
+	public void validateCreate(Object obj) {
+		
 	}
 
 	

@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface BaseService {
 	
 	// 檢核
-	public String validateCreate(Object obj);
+	public void validateCreate(Object obj);
 	
-	public String validateUpdate(Object obj);
+	public void validateUpdate(Object obj);
 
 	// 查詢
 	public Map<String, Object> fetchById(Serializable id);
