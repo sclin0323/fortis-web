@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
  * SysSetting entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "SYS_SETTING", catalog = "testdb")
+@Table(name = "SYS_SETTING", catalog = "fortisdb")
 
 public class SysSetting implements java.io.Serializable {
 
