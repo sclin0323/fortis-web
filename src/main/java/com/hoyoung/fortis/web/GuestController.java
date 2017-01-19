@@ -31,11 +31,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.hoyoung.fortis.authorize.UserInfo;
 import com.hoyoung.fortis.command.GuestCommand;
 import com.hoyoung.fortis.command.SingleSideOnCommand;
+import com.hoyoung.fortis.command.SysEmailCommand;
 import com.hoyoung.fortis.command.UserDeviceCommand;
 import com.hoyoung.fortis.dao.SysSetting;
 import com.hoyoung.fortis.python.PythonResponse;
+import com.hoyoung.fortis.services.GuestLogService;
 import com.hoyoung.fortis.services.GuestService;
 import com.hoyoung.fortis.services.RestTemplateService;
 import com.hoyoung.fortis.services.SysEmailService;
@@ -50,6 +53,9 @@ public class GuestController extends BaseController {
 
 	@Autowired
 	private GuestService guestService;
+	
+	@Autowired
+	private GuestLogService guestLogService;
 	
 	@Autowired
 	private SysEmailService sysEmailService;
@@ -120,47 +126,50 @@ public class GuestController extends BaseController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody ModelAndView add(ModelMap model, HttpServletRequest request, @RequestBody GuestCommand cmd) {
 
+		// 取得登入帳號 UserInfo
+		UserInfo userInfo = getUserInfo(request);
+		if (userInfo == null) {
+			return getFailureModelAndView(model, "登入帳號資料有誤!!");
+		} else {
+			cmd.setCrtUid(userInfo.getSysUserId());
+			cmd.setCrtName(userInfo.getName());
+		}
+		
 		// 建立 guestId and guestPwd
 		LocalDateTime date = LocalDateTime.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddSSS");
 		String guestId = date.format(formatter);
 		cmd.setGuestId(cmd.getApplicantId()+"-"+guestId);
 		cmd.setGuestPwd(guestId);
-		cmd.setEndDate(new Date());
-		
-		// 建立 Device Group
-		cmd.setGuestGroup(getGuestGroupByRandom());
-		
+
 		// 驗證新增資料
-				try {
-					guestService.validateCreate(cmd);
-				} catch(Exception e) {
-					return getFailureModelAndView(model, e.getMessage());
-				}
+		try {
+			guestService.validateCreate(cmd);
+		} catch(Exception e) {
+			return getFailureModelAndView(model, e.getMessage());
+		}
+
+		// 新增 Fortinet : Guest
+		try {
+			restTemplateService.editConfigUserLocal(cmd.getGuestId(), cmd.getGuestPwd());
+			restTemplateService.appendConfigUserGroups(cmd.getGuestId(), cmd.getGuestGroup());
+			restTemplateService.reenableSystemInterface();
+		} catch (Exception e) {
+			log.error("連線設備執行指令失敗!! ", e);
+			return getFailureModelAndView(model, "連線設備執行指令失敗!! ");
+		}
 		
-				// 新增 Fortinet : User Device and Group
-				try {
-					//PythonResponse pr = restTemplateService.editConfigUserLocal(cmd.getGuestId(), cmd.getGuestPwd());
-					// 檢查回傳的資料，使否出現網路卡號存在失敗
-					//if (restTemplateService.validErrorCode(pr, -15) == false) {
-					//	return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
-					//}
-					//restTemplateService.appendConfigUserDeviceGroups(cmd.getDeviceName(), cmd.getDeviceGroup());
-
-					//restTemplateService.reenableSystemInterface();
-				} catch (Exception e) {
-					e.printStackTrace();
-					log.error("連線設備執行指令失敗!! ", e);
-					return getFailureModelAndView(model, "連線設備執行指令失敗!! ");
-				}
-				
-				// 新增 Guest Appoint
-				Map map = guestService.create(cmd);
-				
-				// 新增 發送 Email
-				sysEmailService.create(guestService.getSysEmailCommand(cmd));
-
-				return getSuccessModelAndView(model, map);
+		// 發送 Email
+		SysEmailCommand sysEmailCommand = guestService.getSysEmailCommand(cmd);
+		sysEmailService.sendEmail(sysEmailCommand.getSendTo(), sysEmailCommand.getSubject(), sysEmailCommand.getText());
+		
+		// 新增 Guest Appoint
+		Map map = guestService.create(cmd);
+		
+		// 紀錄 Log
+		guestLogService.saveGuestLog("CREATE", cmd.getCrtUid(), cmd.getCrtName(), cmd.getGuestId());
+		
+		return getSuccessModelAndView(model, map);
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)

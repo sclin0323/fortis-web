@@ -133,9 +133,9 @@ public class UserController extends BaseController {
 		try {
 			PythonResponse r1 = restTemplateService.editConfigUserDevice(cmd.getDeviceName(), cmd.getMacAddress());
 			// 檢查回傳的資料，使否出現網路卡號存在失敗
-			if (restTemplateService.validErrorCode(r1, -15) == false) {
-				return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
-			}
+			//if (restTemplateService.validErrorCode(r1, -15) == false) {
+			//	return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
+			//}
 			restTemplateService.appendConfigUserDeviceGroups(cmd.getDeviceName(), cmd.getDeviceGroup());
 
 			restTemplateService.reenableSystemInterface();
@@ -168,9 +168,9 @@ public class UserController extends BaseController {
 		try {
 			PythonResponse r1 = restTemplateService.editConfigUserDevice(cmd.getDeviceName(), cmd.getMacAddress());
 			// 檢查回傳的資料，使否出現網路卡號存在失敗
-			if (restTemplateService.validErrorCode(r1, -15) == false) {
-				return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
-			}
+			//if (restTemplateService.validErrorCode(r1, -15) == false) {
+			//	return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
+			//}
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("連線設備執行指令失敗!! ", e);
