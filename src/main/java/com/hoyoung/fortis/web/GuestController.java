@@ -88,11 +88,11 @@ public class GuestController extends BaseController {
 	public @ResponseBody ModelAndView initial(ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
 
-		//SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
-		SingleSideOnCommand ssoCmd = new SingleSideOnCommand();
-		ssoCmd.setCn("test1");
-		ssoCmd.setGivenName("test name");
-		ssoCmd.setTitle("Title");
+		SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
+		//SingleSideOnCommand ssoCmd = new SingleSideOnCommand();
+		//ssoCmd.setCn("test1");
+		//ssoCmd.setGivenName("test name");
+		//ssoCmd.setTitle("Title");
 		if (ssoCmd == null) {
 			
 			return getFailureModelAndView(model, "尚未完成登入驗證，請從SSO e-Portal 登入連線。");
