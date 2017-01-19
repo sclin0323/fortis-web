@@ -125,15 +125,6 @@ public class GuestController extends BaseController {
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody ModelAndView add(ModelMap model, HttpServletRequest request, @RequestBody GuestCommand cmd) {
-
-		// 取得登入帳號 UserInfo
-		UserInfo userInfo = getUserInfo(request);
-		if (userInfo == null) {
-			return getFailureModelAndView(model, "登入帳號資料有誤!!");
-		} else {
-			cmd.setCrtUid(userInfo.getSysUserId());
-			cmd.setCrtName(userInfo.getName());
-		}
 		
 		// 建立 guestId and guestPwd
 		LocalDateTime date = LocalDateTime.now();
@@ -141,6 +132,8 @@ public class GuestController extends BaseController {
 		String guestId = date.format(formatter);
 		cmd.setGuestId(cmd.getApplicantId()+"-"+guestId);
 		cmd.setGuestPwd(guestId);
+		// 建立 Device Group
+		cmd.setGuestGroup(getGuestGroupByRandom());
 
 		// 驗證新增資料
 		try {
@@ -162,6 +155,9 @@ public class GuestController extends BaseController {
 		// 發送 Email
 		SysEmailCommand sysEmailCommand = guestService.getSysEmailCommand(cmd);
 		sysEmailService.sendEmail(sysEmailCommand.getSendTo(), sysEmailCommand.getSubject(), sysEmailCommand.getText());
+		
+		// 由訪客自行申請預設 EndDate 為當天
+		cmd.setEndDate(new Date());
 		
 		// 新增 Guest Appoint
 		Map map = guestService.create(cmd);

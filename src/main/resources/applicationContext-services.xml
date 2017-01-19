@@ -24,6 +24,7 @@
 	
 	<!-- Guest -->
 	<bean id="guestService" class="com.hoyoung.fortis.services.GuestServiceImpl"></bean>
+	<bean id="guestLogService" class="com.hoyoung.fortis.services.GuestLogServiceImpl"></bean>
 	
 	
 	<bean id="userDeviceLogService" class="com.hoyoung.fortis.services.UserDeviceLogServiceImpl"></bean>

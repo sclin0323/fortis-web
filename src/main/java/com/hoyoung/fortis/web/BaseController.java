@@ -146,9 +146,9 @@ public abstract class BaseController {
 	// 隨機 選取一個 Guest Group
 		protected String getGuestGroupByRandom() {
 			Random generator = new Random(); 
-			int i = generator.nextInt(10);
+			int i = generator.nextInt(5);
 			
-			return "none-auth-group-"+i;
+			return "guest-auth-group-"+i;
 		}
 	
 }
