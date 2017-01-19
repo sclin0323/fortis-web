@@ -21,11 +21,17 @@ public class GuestLog implements java.io.Serializable {
 
 	private String logId;
 	private String method;
-	private String account;
+	private String email;
 	private Date logDate;
 	private Time logTime;
 	private String logUid;
 	private String logName;
+	private String applicantId;
+	private String applicantName;
+	private Date applicantDate;
+	private Time applicantTime;
+	private Date endDate;
+	private String guestGroup;
 
 	// Constructors
 
@@ -34,15 +40,22 @@ public class GuestLog implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public GuestLog(String logId, String method, String account, Date logDate, Time logTime, String logUid,
-			String logName) {
+	public GuestLog(String logId, String method, String email, Date logDate, Time logTime, String logUid,
+			String logName, String applicantId, String applicantName, Date applicantDate, Time applicantTime,
+			Date endDate, String guestGroup) {
 		this.logId = logId;
 		this.method = method;
-		this.account = account;
+		this.email = email;
 		this.logDate = logDate;
 		this.logTime = logTime;
 		this.logUid = logUid;
 		this.logName = logName;
+		this.applicantId = applicantId;
+		this.applicantName = applicantName;
+		this.applicantDate = applicantDate;
+		this.applicantTime = applicantTime;
+		this.endDate = endDate;
+		this.guestGroup = guestGroup;
 	}
 
 	// Property accessors
@@ -68,14 +81,14 @@ public class GuestLog implements java.io.Serializable {
 		this.method = method;
 	}
 
-	@Column(name = "ACCOUNT", nullable = false, length = 20)
+	@Column(name = "EMAIL", nullable = false, length = 80)
 
-	public String getAccount() {
-		return this.account;
+	public String getEmail() {
+		return this.email;
 	}
 
-	public void setAccount(String account) {
-		this.account = account;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -117,6 +130,68 @@ public class GuestLog implements java.io.Serializable {
 
 	public void setLogName(String logName) {
 		this.logName = logName;
+	}
+
+	@Column(name = "APPLICANT_ID", nullable = false, length = 20)
+
+	public String getApplicantId() {
+		return this.applicantId;
+	}
+
+	public void setApplicantId(String applicantId) {
+		this.applicantId = applicantId;
+	}
+
+	@Column(name = "APPLICANT_NAME", nullable = false, length = 40)
+
+	public String getApplicantName() {
+		return this.applicantName;
+	}
+
+	public void setApplicantName(String applicantName) {
+		this.applicantName = applicantName;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "APPLICANT_DATE", nullable = false, length = 10)
+
+	public Date getApplicantDate() {
+		return this.applicantDate;
+	}
+
+	public void setApplicantDate(Date applicantDate) {
+		this.applicantDate = applicantDate;
+	}
+
+	@Column(name = "APPLICANT_TIME", nullable = false, length = 8)
+
+	public Time getApplicantTime() {
+		return this.applicantTime;
+	}
+
+	public void setApplicantTime(Time applicantTime) {
+		this.applicantTime = applicantTime;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "END_DATE", nullable = false, length = 10)
+
+	public Date getEndDate() {
+		return this.endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	@Column(name = "GUEST_GROUP", nullable = false, length = 40)
+
+	public String getGuestGroup() {
+		return this.guestGroup;
+	}
+
+	public void setGuestGroup(String guestGroup) {
+		this.guestGroup = guestGroup;
 	}
 
 }

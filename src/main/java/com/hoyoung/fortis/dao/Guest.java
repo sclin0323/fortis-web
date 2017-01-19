@@ -20,7 +20,6 @@ public class Guest implements java.io.Serializable {
 	// Fields
 
 	private String guestId;
-	private String guestGroup;
 	private String guestPwd;
 	private String crtUid;
 	private String crtName;
@@ -34,6 +33,9 @@ public class Guest implements java.io.Serializable {
 	private String applicantId;
 	private String applicantName;
 	private Date endDate;
+	private String guestGroup;
+	private Date applicantDate;
+	private Time applicantTime;
 
 	// Constructors
 
@@ -42,10 +44,10 @@ public class Guest implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Guest(String guestId, String guestGroup, String guestPwd, String crtUid, String crtName, Date crtDate,
-			Time crtTime, String email, String applicantId, String applicantName, Date endDate) {
+	public Guest(String guestId, String guestPwd, String crtUid, String crtName, Date crtDate, Time crtTime,
+			String email, String applicantId, String applicantName, Date endDate, String guestGroup, Date applicantDate,
+			Time applicantTime) {
 		this.guestId = guestId;
-		this.guestGroup = guestGroup;
 		this.guestPwd = guestPwd;
 		this.crtUid = crtUid;
 		this.crtName = crtName;
@@ -55,14 +57,16 @@ public class Guest implements java.io.Serializable {
 		this.applicantId = applicantId;
 		this.applicantName = applicantName;
 		this.endDate = endDate;
+		this.guestGroup = guestGroup;
+		this.applicantDate = applicantDate;
+		this.applicantTime = applicantTime;
 	}
 
 	/** full constructor */
-	public Guest(String guestId, String guestGroup, String guestPwd, String crtUid, String crtName, Date crtDate,
-			Time crtTime, String updUid, String updName, Date updDate, Time updTime, String email, String applicantId,
-			String applicantName, Date endDate) {
+	public Guest(String guestId, String guestPwd, String crtUid, String crtName, Date crtDate, Time crtTime,
+			String updUid, String updName, Date updDate, Time updTime, String email, String applicantId,
+			String applicantName, Date endDate, String guestGroup, Date applicantDate, Time applicantTime) {
 		this.guestId = guestId;
-		this.guestGroup = guestGroup;
 		this.guestPwd = guestPwd;
 		this.crtUid = crtUid;
 		this.crtName = crtName;
@@ -76,6 +80,9 @@ public class Guest implements java.io.Serializable {
 		this.applicantId = applicantId;
 		this.applicantName = applicantName;
 		this.endDate = endDate;
+		this.guestGroup = guestGroup;
+		this.applicantDate = applicantDate;
+		this.applicantTime = applicantTime;
 	}
 
 	// Property accessors
@@ -89,16 +96,6 @@ public class Guest implements java.io.Serializable {
 
 	public void setGuestId(String guestId) {
 		this.guestId = guestId;
-	}
-
-	@Column(name = "GUEST_GROUP", nullable = false, length = 20)
-
-	public String getGuestGroup() {
-		return this.guestGroup;
-	}
-
-	public void setGuestGroup(String guestGroup) {
-		this.guestGroup = guestGroup;
 	}
 
 	@Column(name = "GUEST_PWD", nullable = false, length = 20)
@@ -232,6 +229,37 @@ public class Guest implements java.io.Serializable {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	@Column(name = "GUEST_GROUP", nullable = false, length = 20)
+
+	public String getGuestGroup() {
+		return this.guestGroup;
+	}
+
+	public void setGuestGroup(String guestGroup) {
+		this.guestGroup = guestGroup;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "APPLICANT_DATE", nullable = false, length = 10)
+
+	public Date getApplicantDate() {
+		return this.applicantDate;
+	}
+
+	public void setApplicantDate(Date applicantDate) {
+		this.applicantDate = applicantDate;
+	}
+
+	@Column(name = "APPLICANT_TIME", nullable = false, length = 8)
+
+	public Time getApplicantTime() {
+		return this.applicantTime;
+	}
+
+	public void setApplicantTime(Time applicantTime) {
+		this.applicantTime = applicantTime;
 	}
 
 }
