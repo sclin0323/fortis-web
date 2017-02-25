@@ -10,7 +10,7 @@ import javax.persistence.Version;
  * UserDeviceSync entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "USER_DEVICE_SYNC", catalog = "fortis")
+@Table(name = "USER_DEVICE_SYNC", catalog = "fortisdb")
 
 public class UserDeviceSync implements java.io.Serializable {
 

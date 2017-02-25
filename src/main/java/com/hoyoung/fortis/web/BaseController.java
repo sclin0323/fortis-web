@@ -148,7 +148,7 @@ public abstract class BaseController {
 			Random generator = new Random(); 
 			int i = generator.nextInt(5);
 			
-			return "guest_auth_group_"+i;
+			return "guest-auth-group-"+i;
 		}
 	
 }
