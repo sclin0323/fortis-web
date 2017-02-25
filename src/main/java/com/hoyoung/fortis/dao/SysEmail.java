@@ -15,7 +15,7 @@ import javax.persistence.TemporalType;
  * SysEmail entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "SYS_EMAIL", catalog = "fortisdb")
+@Table(name = "SYS_EMAIL", catalog = "fortis")
 
 public class SysEmail implements java.io.Serializable {
 

@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
  * UserDevice entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "USER_DEVICE", catalog = "fortisdb")
+@Table(name = "USER_DEVICE", catalog = "fortis")
 
 public class UserDevice implements java.io.Serializable {
 

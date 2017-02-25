@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
  * Guest entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "GUEST", catalog = "fortisdb")
+@Table(name = "GUEST", catalog = "fortis")
 
 public class Guest implements java.io.Serializable {
 
