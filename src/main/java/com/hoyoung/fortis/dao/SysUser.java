@@ -13,7 +13,7 @@ import javax.persistence.TemporalType;
  * SysUser entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "SYS_USER", catalog = "fortisdb")
+@Table(name = "SYS_USER", catalog = "fortis")
 
 public class SysUser implements java.io.Serializable {
 
