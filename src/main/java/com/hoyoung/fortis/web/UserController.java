@@ -75,7 +75,7 @@ public class UserController extends BaseController {
 		session.setAttribute("ssologin", cmd);
 
 		try {
-			response.sendRedirect("/guest.html");
+			response.sendRedirect("/apply.html");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
