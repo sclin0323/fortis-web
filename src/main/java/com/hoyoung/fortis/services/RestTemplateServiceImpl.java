@@ -52,12 +52,12 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 		String command = "conf vdom \n edit wireless-0 \n config system interface \n edit port34 \n set device-identification disable \n set device-identification enable \n end \n exit \n";
 		return sendRequestToFortinet(command);
 	}
-
+	
 	// For Config User Device
 	@Override
 	public PythonResponse editConfigUserDevice(String deviceName, String macAddress) {
 		String command = "conf vdom \n edit wireless-0 \n config user device \n edit " + deviceName + " \n set mac "
-				+ macAddress + " \n next \n end \n";
+				+ macAddress + " \n set type other-network-device \n next \n end \n";
 
 		return sendRequestToFortinet(command);
 	}

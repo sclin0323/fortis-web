@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -20,17 +21,25 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.hoyoung.fortis.authorize.SSLUtil;
+import com.hoyoung.fortis.command.CheckUserIdPassword;
 import com.hoyoung.fortis.command.SingleSideOnCommand;
 import com.hoyoung.fortis.command.UserDeviceCommand;
 import com.hoyoung.fortis.dao.SysSetting;
@@ -39,6 +48,10 @@ import com.hoyoung.fortis.services.RestTemplateService;
 import com.hoyoung.fortis.services.SysSettingService;
 import com.hoyoung.fortis.services.UserDeviceLogService;
 import com.hoyoung.fortis.services.UserDeviceService;
+
+import javax.net.ssl.*;
+import java.security.*;
+import java.security.cert.X509Certificate;
 
 @Controller
 @RequestMapping(value = "/user")
@@ -79,6 +92,56 @@ public class UserController extends BaseController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping(value = "/initialByPassword", method = RequestMethod.POST)
+	public @ResponseBody ModelAndView initialByPassword(ModelMap model, HttpServletRequest request,
+			HttpServletResponse response, @RequestBody SingleSideOnCommand cmd) {
+		
+		Map<String, Object> sysSetting = sysSettingService.fetchById("SETTING001");
+		if (sysSetting == null) {
+			return getFailureModelAndView(model, "設定載入失敗!! 請初始化設定");
+		}
+		
+		System.out.print(cmd.getCn());
+		
+		// 檢查帳號密碼是否正確 2020-05-01
+		try {
+			SSLUtil.turnOffSslChecking();
+			RestTemplate template = new RestTemplate();
+			String url = "https://ncutuni.ncut.edu.tw/api/login";
+			Map<String, String> m = new HashMap<>();
+			m.put("userId",cmd.getCn());
+			m.put("password",cmd.getUserPassword());
+			m.put("systemKey","9b63789b27a147bfa9f4ce3882bd13f1");
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<Map<String, String>> req = new HttpEntity<>(m, headers);
+			CheckUserIdPassword result = template.postForObject(url,req, CheckUserIdPassword.class);
+			
+			if (result.getSuccess() == false) {
+				return getFailureModelAndView(model, "帳號密碼驗證失敗!! ");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return getFailureModelAndView(model, "檢查帳號密碼失敗EXCEPTION!! ");
+		}
+		
+		List datas = userDeviceService.fetchByApplicantId(cmd.getCn());
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("deviceLimit", sysSetting.get("deviceLimit"));
+		map.put("userDevices", datas);
+
+		//map.put("ssologin", request.getSession().getAttribute("ssologin"));
+		map.put("applicantId", cmd.getCn());
+		map.put("applicantName", cmd.getGivenName());
+		map.put("applicantTitle", cmd.getTitle());
+
+		return getSuccessModelAndView(model, map);
+		
+		//return getFailureModelAndView(model, "連線設備執行指令失敗!! ");
 	}
 
 	@RequestMapping(value = "/initial", method = RequestMethod.GET)
