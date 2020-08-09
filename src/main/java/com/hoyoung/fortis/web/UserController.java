@@ -36,6 +36,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.hoyoung.fortis.authorize.SSLUtil;
@@ -66,15 +69,15 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private SysSettingService sysSettingService;
-	
+
 	@Autowired
 	private UserDeviceLogService userDeviceLogService;
-	
+
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView test(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		List dataList = userDeviceService.fetchByApplicantId("00101");
-		
+
 		return getSuccessModelAndView(model, dataList, dataList.size());
 	}
 
@@ -93,55 +96,61 @@ public class UserController extends BaseController {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@RequestMapping(value = "/initialByPassword", method = RequestMethod.POST)
 	public @ResponseBody ModelAndView initialByPassword(ModelMap model, HttpServletRequest request,
 			HttpServletResponse response, @RequestBody SingleSideOnCommand cmd) {
-		
+
 		Map<String, Object> sysSetting = sysSettingService.fetchById("SETTING001");
 		if (sysSetting == null) {
 			return getFailureModelAndView(model, "設定載入失敗!! 請初始化設定");
 		}
-		
+
 		System.out.print(cmd.getCn());
-		
+
 		// 檢查帳號密碼是否正確 2020-05-01
 		try {
 			SSLUtil.turnOffSslChecking();
 			RestTemplate template = new RestTemplate();
 			String url = "https://ncutuni.ncut.edu.tw/api/login";
 			Map<String, String> m = new HashMap<>();
-			m.put("userId",cmd.getCn());
-			m.put("password",cmd.getUserPassword());
-			m.put("systemKey","9b63789b27a147bfa9f4ce3882bd13f1");
+			m.put("userId", cmd.getCn());
+			m.put("password", cmd.getUserPassword());
+			m.put("systemKey", "9b63789b27a147bfa9f4ce3882bd13f1");
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<Map<String, String>> req = new HttpEntity<>(m, headers);
-			CheckUserIdPassword result = template.postForObject(url,req, CheckUserIdPassword.class);
-			
+			CheckUserIdPassword result = template.postForObject(url, req, CheckUserIdPassword.class);
+
 			if (result.getSuccess() == false) {
 				return getFailureModelAndView(model, "帳號密碼驗證失敗!! ");
 			}
+
+			// 解碼 token
+			DecodedJWT jwt = JWT.decode(result.getToken());
+			String applicantName = jwt.getClaim("name").asString();
+			String applicantTitle = jwt.getClaim("departmentName").asString();
 			
+			
+		
+			List datas = userDeviceService.fetchByApplicantId(cmd.getCn());
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("deviceLimit", sysSetting.get("deviceLimit"));
+			map.put("userDevices", datas);
+
+			// map.put("ssologin", request.getSession().getAttribute("ssologin"));
+			map.put("applicantId", cmd.getCn());
+			map.put("applicantName", applicantName);
+			map.put("applicantTitle", applicantTitle);
+
+			return getSuccessModelAndView(model, map);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return getFailureModelAndView(model, "檢查帳號密碼失敗EXCEPTION!! ");
 		}
-		
-		List datas = userDeviceService.fetchByApplicantId(cmd.getCn());
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("deviceLimit", sysSetting.get("deviceLimit"));
-		map.put("userDevices", datas);
 
-		//map.put("ssologin", request.getSession().getAttribute("ssologin"));
-		map.put("applicantId", cmd.getCn());
-		map.put("applicantName", cmd.getGivenName());
-		map.put("applicantTitle", cmd.getTitle());
-
-		return getSuccessModelAndView(model, map);
-		
-		//return getFailureModelAndView(model, "連線設備執行指令失敗!! ");
+		// return getFailureModelAndView(model, "連線設備執行指令失敗!! ");
 	}
 
 	@RequestMapping(value = "/initial", method = RequestMethod.GET)
@@ -150,15 +159,14 @@ public class UserController extends BaseController {
 
 		SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
 		if (ssoCmd == null) {
-			
+
 			return getFailureModelAndView(model, "尚未完成登入驗證，請從SSO e-Portal 登入連線。");
 		}
-		 
+
 		Map<String, Object> sysSetting = sysSettingService.fetchById("SETTING001");
 		if (sysSetting == null) {
 			return getFailureModelAndView(model, "設定載入失敗!! 請初始化設定");
 		}
-		
 
 		List datas = userDeviceService.fetchByApplicantId(ssoCmd.getCn());
 
@@ -175,7 +183,8 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public @ResponseBody ModelAndView add(ModelMap model, HttpServletRequest request, @RequestBody UserDeviceCommand cmd) {
+	public @ResponseBody ModelAndView add(ModelMap model, HttpServletRequest request,
+			@RequestBody UserDeviceCommand cmd) {
 
 		// 建立 Device Name
 		LocalDateTime date = LocalDateTime.now();
@@ -188,7 +197,7 @@ public class UserController extends BaseController {
 		// 驗證新增 User Device
 		try {
 			userDeviceService.validateCreate(cmd);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return getFailureModelAndView(model, e.getMessage());
 		}
 
@@ -196,9 +205,9 @@ public class UserController extends BaseController {
 		try {
 			PythonResponse r1 = restTemplateService.editConfigUserDevice(cmd.getDeviceName(), cmd.getMacAddress());
 			// 檢查回傳的資料，使否出現網路卡號存在失敗
-			//if (restTemplateService.validErrorCode(r1, -15) == false) {
-			//	return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
-			//}
+			// if (restTemplateService.validErrorCode(r1, -15) == false) {
+			// return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
+			// }
 			restTemplateService.appendConfigUserDeviceGroups(cmd.getDeviceName(), cmd.getDeviceGroup());
 
 			restTemplateService.reenableSystemInterface();
@@ -210,30 +219,31 @@ public class UserController extends BaseController {
 
 		// 新增人員訊息
 		Map map = userDeviceService.create(cmd);
-		
-		// Log
-		userDeviceLogService.saveUserDeviceLog("CREATE", cmd.getApplicantId(), cmd.getApplicantName(), cmd.getDeviceName());
 
+		// Log
+		userDeviceLogService.saveUserDeviceLog("CREATE", cmd.getApplicantId(), cmd.getApplicantName(),
+				cmd.getDeviceName());
 
 		return getSuccessModelAndView(model, map);
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
-	public @ResponseBody ModelAndView update(ModelMap model, HttpServletRequest request, @RequestBody UserDeviceCommand cmd) {
+	public @ResponseBody ModelAndView update(ModelMap model, HttpServletRequest request,
+			@RequestBody UserDeviceCommand cmd) {
 
 		// 驗證 - 網卡異動檢核網卡是否重複。
 		try {
 			userDeviceService.validateUpdate(cmd);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			return getFailureModelAndView(model, e.getMessage());
 		}
 
 		try {
 			PythonResponse r1 = restTemplateService.editConfigUserDevice(cmd.getDeviceName(), cmd.getMacAddress());
 			// 檢查回傳的資料，使否出現網路卡號存在失敗
-			//if (restTemplateService.validErrorCode(r1, -15) == false) {
-			//	return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
-			//}
+			// if (restTemplateService.validErrorCode(r1, -15) == false) {
+			// return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
+			// }
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("連線設備執行指令失敗!! ", e);
@@ -242,8 +252,8 @@ public class UserController extends BaseController {
 
 		// 更新人員訊息
 		Map map = userDeviceService.update(cmd);
-		
-		//Log
+
+		// Log
 		userDeviceLogService.saveUserDeviceLog("UPDATE", cmd.getUpdUid(), cmd.getUpdName(), cmd.getDeviceName());
 
 		return getSuccessModelAndView(model, map);
@@ -256,8 +266,8 @@ public class UserController extends BaseController {
 		String deviceName = request.getParameter("deviceName");
 		String deviceGroup = (String) userDeviceService.fetchById(deviceName).get("deviceGroup");
 
-		System.out.println(logUid+" "+logName);
-		
+		System.out.println(logUid + " " + logName);
+
 		try {
 			restTemplateService.unselectConfigUserDeviceGroups(deviceName, deviceGroup);
 			restTemplateService.deleteConfigUserDevice(deviceName);
@@ -268,11 +278,11 @@ public class UserController extends BaseController {
 			return getFailureModelAndView(model, "連線設備執行指令失敗!! ");
 		}
 
-		//Log
+		// Log
 		userDeviceLogService.saveUserDeviceLog("DELETE", logUid, logName, deviceName);
-		
+
 		Map map = userDeviceService.delete(deviceName);
-		
+
 		return getSuccessModelAndView(model, map);
 	}
 
