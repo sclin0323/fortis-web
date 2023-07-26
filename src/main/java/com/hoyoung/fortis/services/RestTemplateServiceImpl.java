@@ -27,9 +27,6 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 
 	@Value("${fortis_wspy.urlPrefix}")
 	public String urlPrefix;
-	
-	// public String urlPrefix = "http://140.128.71.35:8000/fortinet/"; // 原系統
-	// public String urlPrefix = "http://140.128.71.36:8000/fortinet/"; // 訪客系統
 
 	@Autowired(required = true)
 	protected FortisDAO fortisDAO;
