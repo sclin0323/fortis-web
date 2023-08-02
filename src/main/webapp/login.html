@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html ng-app="LoginApp">
+
+
+<header>
+
+    <meta charset="utf-8">
+    <!--
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    -->
+    <title>校園無線網路網卡登記系統 登入頁面</title>
+    <link rel="icon" type="image/x-icon" href="images/nutc.ico">
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+    <!-- Load Bootstrap and JQuery -->
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootpag/1.0.7/jquery.bootpag.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.9/angular.min.js"></script>
+
+
+
+</header>
+
+
+
+<body>
+
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="form-horizontal well well-sm">
+                    <img src="/images/ban.jpg" class="img-fluid center-block" alt="Responsive image">
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <form ng-submit="submit()">
+                    <div class="form-horizontal well well-sm">
+                        <fieldset>
+                            <legend>
+                                <h3><p class="text-center">校園無線網路網卡登記系統</p></h3></legend>
+                            <div class="form-group">
+                                <label class="col-md-2 col-md-offset-3 control-label">帳號 ID</label>
+                                <div class="col-md-3">
+                                    <input ng-model="applicantId" class="form-control" type="text" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 col-md-offset-3 control-label">帳號 密碼</label>
+                                <div class="col-md-3">
+                                    <input ng-model="applicantName" class="form-control" type="text" required>
+                                </div>
+                            </div>
+
+                            <!-- add button -->
+                            <div class="form-group" ng-show="addMode">
+                                <div class="col-md-offset-5 col-md-3">
+                                    <button type="submit" class="btn btn-primary btn-block" ng-disabled="status != 0">
+                                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"> 登入</span>
+                                    </button>
+                                    <p class="help-block">若登入有問題 可連繫 OOOO-OOOO</p>
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    </div>
+                </form>
+            </div>
+
+
+         
+        </div>
+    </div>
+
+
+</body>
+
+
+</html>
