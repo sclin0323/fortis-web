@@ -4,7 +4,7 @@ public class LoginResCommand {
 
 	String token;
 	Integer status;
-	Boolean success;
+	//String success;
 	
 	public String getToken() {
 		return token;
@@ -18,12 +18,8 @@ public class LoginResCommand {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-	public Boolean getSuccess() {
-		return success;
-	}
-	public void setSuccess(Boolean success) {
-		this.success = success;
-	}
+
+
 	
 	
 	

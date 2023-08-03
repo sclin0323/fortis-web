@@ -167,9 +167,8 @@ public class UserController extends BaseController {
             
             
             log.info("token:"+loginResCommand.getToken());
-            log.info("success:"+loginResCommand.getSuccess());
             
-            if (loginResCommand.getSuccess() == true) {
+            if (loginResCommand.getToken() != "") {
             	
             	HttpSession session = request.getSession();
                 SingleSideOnCommand cd = new SingleSideOnCommand();
@@ -180,7 +179,7 @@ public class UserController extends BaseController {
         		
         		return getSuccessModelAndView(model, map);
             	
-            } else if (loginResCommand.getSuccess() == false) {
+            } else if (loginResCommand.getToken() == "") {
             	
             	
             	log.info("登入失敗!!");
