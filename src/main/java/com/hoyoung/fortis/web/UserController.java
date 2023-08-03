@@ -37,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.hoyoung.fortis.command.LoginApiCommand;
 import com.hoyoung.fortis.command.SingleSideOnCommand;
 import com.hoyoung.fortis.command.UserDeviceCommand;
 import com.hoyoung.fortis.dao.SysSetting;
@@ -156,7 +157,10 @@ public class UserController extends BaseController {
         	
             String responseBody = res.getBody();
            
-            log.info(new String(responseBody.getBytes("ISO-8859-1"), "UTF-8"));
+            Gson gson = new Gson();
+            LoginApiCommand loginApiCmd = gson.fromJson(responseBody, LoginApiCommand.class);
+            
+            log.info("token:"+loginApiCmd.getToken());
             
             
             if (responseBody.contains("true")) {
