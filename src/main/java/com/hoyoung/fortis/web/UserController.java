@@ -293,8 +293,8 @@ public class UserController extends BaseController {
 		System.out.println(logUid+" "+logName);
 		
 		try {
-			//restTemplateService.unselectConfigUserDeviceGroups(deviceName, deviceGroup);
-			//restTemplateService.deleteConfigUserDevice(deviceName);
+			restTemplateService.unselectConfigUserDeviceGroups(deviceName, deviceGroup);
+			restTemplateService.deleteConfigUserDevice(deviceName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("連線設備執行指令失敗!! ", e);
