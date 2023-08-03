@@ -37,7 +37,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
-import com.hoyoung.fortis.command.LoginResCommand;
 import com.hoyoung.fortis.command.SingleSideOnCommand;
 import com.hoyoung.fortis.command.UserDeviceCommand;
 import com.hoyoung.fortis.dao.SysSetting;
@@ -160,15 +159,12 @@ public class UserController extends BaseController {
         	
             log.info("33333333333333333333333333");
             String responseBody = res.getBody();
-            Gson gson = new Gson();
-            LoginResCommand loginResCommand = gson.fromJson(responseBody, LoginResCommand.class);
+           
             
-            log.info("444444444444444444444444444");
+            log.info(responseBody);
             
             
-            log.info("token:"+loginResCommand.getToken());
-            
-            if (loginResCommand.getToken() != "") {
+            if (responseBody.contains("true")) {
             	
             	HttpSession session = request.getSession();
                 SingleSideOnCommand cd = new SingleSideOnCommand();
@@ -179,7 +175,7 @@ public class UserController extends BaseController {
         		
         		return getSuccessModelAndView(model, map);
             	
-            } else if (loginResCommand.getToken() == "") {
+            } else if (responseBody.contains("false")) {
             	
             	
             	log.info("登入失敗!!");
