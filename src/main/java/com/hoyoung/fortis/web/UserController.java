@@ -146,13 +146,9 @@ public class UserController extends BaseController {
             System.out.println("Response: " + responseBody);
             
             HttpSession session = request.getSession();
-            
             SingleSideOnCommand cd = new SingleSideOnCommand();
             cd.setCn("01101");
     		session.setAttribute("ssologin", cd);
-    		
-    		response.sendRedirect("/applypage.html");
-            
             
         } else {
             System.err.println("POST request failed with status code: " + response);
@@ -161,10 +157,7 @@ public class UserController extends BaseController {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 
-
-
 		return getSuccessModelAndView(model, map);
-
 
 	}
 
