@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -160,6 +161,8 @@ public class UserController extends BaseController {
 
             if (body.isSuccess() == true) {
             	
+            	jwtDecoder(body.getToken());
+            	
             	HttpSession session = request.getSession();
                 SingleSideOnCommand cd = new SingleSideOnCommand();
                 cd.setCn(cmd.getCn());
@@ -173,7 +176,7 @@ public class UserController extends BaseController {
             	
             	
             	log.info("登入失敗!!");
-            	return getFailureModelAndView(model, "登入失敗!! ");
+            	return getFailureModelAndView(model, "帳號密碼登入失敗 請重新確認!!");
             }
             
             
@@ -182,11 +185,11 @@ public class UserController extends BaseController {
 
             
             log.info("登入失敗!!");
-            return getFailureModelAndView(model, "登入失敗!! ");
+            return getFailureModelAndView(model, "帳號密碼登入失敗 請重新確認!!v2");
         }
         
         log.info("登入失敗!!");
-        return getFailureModelAndView(model, "登入失敗!! ");
+        return getFailureModelAndView(model, "帳號密碼登入失敗 請重新確認!!v3");
 
 
 	}
@@ -323,6 +326,28 @@ public class UserController extends BaseController {
 		Map map = userDeviceService.delete(deviceName);
 		
 		return getSuccessModelAndView(model, map);
+	}
+	
+	public Map jwtDecoder(String token) {
+		
+		String[] parts = token.split("\\.");
+        String payload = parts[1];
+        
+        String base64Payload = payload.replace('-', '+').replace('_', '/');
+        byte[] decodedBytes = Base64.getDecoder().decode(base64Payload);
+        String decodedPayload = new String(decodedBytes);
+        
+        com.google.gson.Gson gson = new com.google.gson.Gson();
+        Map<String, Object> userData = gson.fromJson(decodedPayload, Map.class);
+        
+        // Now you can access data from the decoded JWT payload
+        log.info("User ID: " + userData.get("userId"));
+        log.info("Email: " + userData.get("email"));
+        log.info("Name: " + userData.get("name"));
+        
+        return userData;
+		
+		
 	}
 
 }
