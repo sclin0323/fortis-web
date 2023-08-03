@@ -149,21 +149,22 @@ public class UserController extends BaseController {
         
         // 發送 POST 請求，並取得回應
         String url = "https://ncutuni.ncut.edu.tw/api/login";
-        ResponseEntity<String> res = restTemplate.postForEntity(url, req, String.class);
+        ResponseEntity<LoginApiCommand> res = restTemplate.postForEntity(url, req, LoginApiCommand.class);
         
         // 處理回應
         if (res.getStatusCode().is2xxSuccessful()) {
         	
         	
-            String responseBody = res.getBody();
+        	LoginApiCommand body = res.getBody();
            
-            Gson gson = new Gson();
-            LoginApiCommand loginApiCmd = gson.fromJson(responseBody, LoginApiCommand.class);
-            
-            log.info("token:"+loginApiCmd.getToken());
             
             
-            if (responseBody.contains("true")) {
+            log.info("token:"+body.getToken());
+            
+            
+            
+            /*
+            if (body.contains("true")) {
             	
             	HttpSession session = request.getSession();
                 SingleSideOnCommand cd = new SingleSideOnCommand();
@@ -180,6 +181,7 @@ public class UserController extends BaseController {
             	log.info("登入失敗!!");
             	return getFailureModelAndView(model, "登入失敗!! ");
             }
+            */
             
             
         } else {
