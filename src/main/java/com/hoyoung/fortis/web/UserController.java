@@ -83,6 +83,7 @@ public class UserController extends BaseController {
 		return getSuccessModelAndView(model, dataList, dataList.size());
 	}
 
+	/*
 	@RequestMapping(value = "/ssologin", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public void ssologin(ModelMap model, HttpServletRequest request, HttpServletResponse response,
 			SingleSideOnCommand cmd) {
@@ -98,14 +99,11 @@ public class UserController extends BaseController {
 			e.printStackTrace();
 		}
 	}
+	*/
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public @ResponseBody ModelAndView login(ModelMap model, HttpServletRequest request, HttpServletResponse response, @RequestBody SingleSideOnCommand cmd) throws NoSuchAlgorithmException, KeyManagementException, Exception{
 		
-		
-		log.info("cn:"+cmd.getCn());
-		log.info("password:"+cmd.getUserPassword());
-
 		
 		// 忽略 SSL 驗證
         SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -128,7 +126,6 @@ public class UserController extends BaseController {
         // 使用自定義的 HttpRequestFactory 創建 RestTemplate
         RestTemplate restTemplate = new RestTemplate(requestFactory);
 		
-		
 		HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -146,8 +143,6 @@ public class UserController extends BaseController {
         if (res.getStatusCode().is2xxSuccessful()) {
         	
         	LoginApiCommand body = res.getBody(); 
-            log.info("token:"+body.getToken());
-            
 
             if (body.isSuccess() == true) {
             	
@@ -166,24 +161,15 @@ public class UserController extends BaseController {
             	
             } else if (body.isSuccess() == false) {
             	
-            	
-            	log.info("登入失敗!!");
             	return getFailureModelAndView(model, "帳號密碼登入失敗 請重新確認!!");
             }
-            
-            
-            
+             
         } else {
 
-            
-            log.info("登入失敗!!");
             return getFailureModelAndView(model, "帳號密碼登入失敗 請重新確認!!v2");
         }
         
-        log.info("登入失敗!!");
         return getFailureModelAndView(model, "帳號密碼登入失敗 請重新確認!!v3");
-
-
 	}
 
 
@@ -194,7 +180,6 @@ public class UserController extends BaseController {
 
 		SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
 		if (ssoCmd == null) {
-			
 			return getFailureModelAndView(model, "尚未完成登入驗證，請從 Login 登入。");
 		}
 		 
@@ -252,7 +237,6 @@ public class UserController extends BaseController {
 		// Log
 		userDeviceLogService.saveUserDeviceLog("CREATE", cmd.getApplicantId(), cmd.getApplicantName(), cmd.getDeviceName());
 
-
 		return getSuccessModelAndView(model, map);
 	}
 
@@ -301,14 +285,12 @@ public class UserController extends BaseController {
 			return getFailureModelAndView(model, "連線設備執行指令失敗!! ");
 		}
 
-		//Log
 		userDeviceLogService.saveUserDeviceLog("DELETE", logUid, logName, deviceName);
-		
 		Map map = userDeviceService.delete(deviceName);
-		
 		return getSuccessModelAndView(model, map);
 	}
 	
+	// 將Login API回傳的token 解碼取的帳號相關資訊
 	public Map jwtDecoder(String token) {
 		
 		String[] parts = token.split("\\.");
@@ -321,14 +303,11 @@ public class UserController extends BaseController {
         com.google.gson.Gson gson = new com.google.gson.Gson();
         Map<String, Object> userData = gson.fromJson(decodedPayload, Map.class);
         
-        // Now you can access data from the decoded JWT payload
         log.info("User ID: " + userData.get("userId"));
         log.info("Email: " + userData.get("email"));
         log.info("Name: " + userData.get("name"));
         
         return userData;
-		
-		
 	}
 
 }
