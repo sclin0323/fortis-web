@@ -22,10 +22,140 @@
 
 
 </header>
+<script>
+    var app = angular.module('LoginApp', [])
+        .factory('userService', function() {
+            return {
+  
+                gotologin: function($scope, $http) {
+                	// 檢查是否達新增上限
+		            //if ($scope.userDevices.length >= $scope.deviceLimit) {
+		            //    alert('申請數量已達上限。');
+		            //    return;
+		            //}
+                
+                    // Post Add by Ajax
+                    jQuery('#ajaxWaitingModal').modal("show");
+                    $http({
+                        method: 'POST',
+                        url: '/web/user/login',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: {
+                            userId: '01101',
+                            password: 'ncut01101'
+
+                        }
+                    }).then(function successCallback(response) {
+                        // 檢查是否有檢核錯誤
+                        if (response.data.status === 0) {
+                            // 新增一筆資料
+                            //$scope.userDevices.push(response.data.data);
+                            // 清除 Form
+                            //$scope.macAddress = '';
+                            
+
+
+                            alert('登入成功~~~~');
+                            
+
+                        } else if (response.data.status === -1) {
+                            alert(response.data.message);
+                        } else {
+                            alert(response);
+                        }
+                        // 關閉等待視窗
+                        jQuery('#ajaxWaitingModal').modal("hide");
+
+                    }, function errorCallback(response) {
+                        alert("執行發生錯誤!!");
+                        var myWindow = window.open("", "", "width=600,height=300", false);
+                        myWindow.document.write(JSON.stringify(response.data));
+                        // 關閉等待視窗
+                        jQuery('#ajaxWaitingModal').modal("hide");
+                    });
+                }
+                
+                
+                /*
+                updateUserDevice: function($scope, $http) {
+                    var deviceName = $scope.userDevices[$scope.updateIndex]['deviceName'];
+                    var deviceGroup = $scope.userDevices[$scope.updateIndex]['deviceGroup'];
+                    // 檢查網卡是否有修改
+                    if ($scope.macAddress.toLowerCase() == $scope.userDevices[$scope.updateIndex]['macAddress']) {
+                        alert('網卡沒有異動，請重新確認!');
+                        return;
+                    }
+
+                    // Post Update by Ajax
+                    jQuery('#ajaxWaitingModal').modal("show");
+                    $http({
+                        method: 'PUT',
+                        url: '/web/user/update',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: {
+                            deviceGroup: deviceGroup,
+                            updUid: $scope.applicantId,
+                            updName: $scope.applicantName,
+                            deviceName: deviceName,
+                            applicantId: $scope.applicantId,
+                            applicantName: $scope.applicantName,
+                            macAddress: $scope.macAddress.toLowerCase()
+
+                        }
+                    }).then(function successCallback(response) {
+                        // 檢查是否有檢核錯誤
+                        if (response.data.status === 0) {
+                            // 更新資料
+                            $scope.userDevices[$scope.updateIndex] = response.data.data;
+                            // 清除 Form
+                            $scope.macAddress = '';
+                            // 切換回 新增 模式
+                            $scope.setAddMode();
+                        } else if (response.data.status === -1) {
+                            alert(response.data.message);
+                        } else {
+                            alert(response);
+                        }
+                        // 關閉等待視窗
+                        jQuery('#ajaxWaitingModal').modal("hide");
+
+                    }, function errorCallback(response) {
+                        alert("執行發生錯誤!!");
+                        var myWindow = window.open("", "", "width=600,height=300", false);
+                        myWindow.document.write(JSON.stringify(response.data));
+                        // 關閉等待視窗
+                        jQuery('#ajaxWaitingModal').modal("hide");
+                    });
+                }
+                */
+            }
+        });
+
+    app.controller('LoginCtrl', function($scope, $http, userService) {
+
+        // Submit 登入
+        $scope.submit = function() {
+
+            alert('網卡格式有問題，請重新確認。');
+
+
+            userService.gotologin($scope, $http);
+
+            return;
+
+        }
+    });
+
+
+</script>
 
 
 
-<body>
+<body ng-controller='LoginCtrl'>
 
 
     <div class="container-fluid">
@@ -58,9 +188,9 @@
                             </div>
 
                             <!-- add button -->
-                            <div class="form-group" ng-show="addMode">
+                            <div class="form-group">
                                 <div class="col-md-offset-5 col-md-3">
-                                    <button type="submit" class="btn btn-primary btn-block" ng-disabled="status != 0">
+                                    <button type="submit" class="btn btn-primary btn-block">
                                         <span class="glyphicon glyphicon-log-in" aria-hidden="true"> 登入</span>
                                     </button>
                                     <p class="help-block">若登入有問題 可連繫 OOOO-OOOO</p>
@@ -74,6 +204,23 @@
 
 
          
+        </div>
+    </div>
+
+
+    <!-- Ajax Waiting Modal-->
+    <div class="modal fade" id="ajaxWaitingModal" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-vertical-centered-for-ajax_waiting">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <h5>Processing.....</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="ajaxWaiting" class="ajaxWaiting">
+                        <img src="images/progressBar.gif">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

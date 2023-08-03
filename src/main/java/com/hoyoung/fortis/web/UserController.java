@@ -16,18 +16,24 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
@@ -39,6 +45,16 @@ import com.hoyoung.fortis.services.RestTemplateService;
 import com.hoyoung.fortis.services.SysSettingService;
 import com.hoyoung.fortis.services.UserDeviceLogService;
 import com.hoyoung.fortis.services.UserDeviceService;
+import org.springframework.http.HttpHeaders;
+
+///////////////////
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.cert.X509Certificate;
+import java.security.NoSuchAlgorithmException;
+import java.security.KeyManagementException;
+
 
 @Controller
 @RequestMapping(value = "/user")
@@ -81,6 +97,79 @@ public class UserController extends BaseController {
 		}
 	}
 
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public @ResponseBody ModelAndView login(ModelMap model, HttpServletRequest request, HttpServletResponse response, @RequestBody UserDeviceCommand cmd) throws NoSuchAlgorithmException, KeyManagementException, Exception{
+		
+
+		
+		// 忽略 SSL 驗證
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, new TrustManager[]{new X509TrustManager() {
+            public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {}
+
+            public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {}
+
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        }}, new java.security.SecureRandom());
+
+        // 創建自定義的 HttpRequestFactory，設置忽略 SSL 驗證
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(
+                HttpClients.custom()
+                        .setSslcontext(sslContext)
+                        .build()
+        );
+
+        // 使用自定義的 HttpRequestFactory 創建 RestTemplate
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+		
+		
+		HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        
+        // 設定 JSON 數據
+        String jsonBody = "{\"userId\":\"01101\",\"password\":\"ncut01101\",\"remember\":\"true\",\"systemKey\":\"3294dde9518e4fa8b4050ba489f673a1\"}";
+
+        // 創建 HttpEntity，將 JSON 數據和頭部結合
+        HttpEntity<String> req = new HttpEntity<>(jsonBody, headers);
+        
+        // 發送 POST 請求，並取得回應
+        String url = "https://ncutuni.ncut.edu.tw/api/login";
+        ResponseEntity<String> res = restTemplate.postForEntity(url, req, String.class);
+        
+        // 處理回應
+        if (res.getStatusCode().is2xxSuccessful()) {
+            String responseBody = res.getBody();
+            System.out.println("Response: " + responseBody);
+            
+            HttpSession session = request.getSession();
+            
+            SingleSideOnCommand cd = new SingleSideOnCommand();
+            cd.setCn("01101");
+    		session.setAttribute("ssologin", cd);
+    		
+    		response.sendRedirect("/applypage.html");
+            
+            
+        } else {
+            System.err.println("POST request failed with status code: " + response);
+        }
+
+
+		Map<String, Object> map = new HashMap<String, Object>();
+
+
+
+		return getSuccessModelAndView(model, map);
+
+
+	}
+
+
+
 	@RequestMapping(value = "/initial", method = RequestMethod.GET)
 	public @ResponseBody ModelAndView initial(ModelMap model, HttpServletRequest request,
 			HttpServletResponse response) {
@@ -88,7 +177,7 @@ public class UserController extends BaseController {
 		SingleSideOnCommand ssoCmd = (SingleSideOnCommand) request.getSession().getAttribute("ssologin");
 		if (ssoCmd == null) {
 			
-			return getFailureModelAndView(model, "尚未完成登入驗證，請從SSO e-Portal 登入連線。");
+			return getFailureModelAndView(model, "尚未完成登入驗證，請從 Login 登入。");
 		}
 		 
 		Map<String, Object> sysSetting = sysSettingService.fetchById("SETTING001");
