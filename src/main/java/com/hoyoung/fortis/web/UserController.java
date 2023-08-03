@@ -154,17 +154,11 @@ public class UserController extends BaseController {
         // 處理回應
         if (res.getStatusCode().is2xxSuccessful()) {
         	
-        	
-        	LoginApiCommand body = res.getBody();
-           
-            
-            
+        	LoginApiCommand body = res.getBody(); 
             log.info("token:"+body.getToken());
             
-            
-            
-            /*
-            if (body.contains("true")) {
+
+            if (body.isSuccess() == true) {
             	
             	HttpSession session = request.getSession();
                 SingleSideOnCommand cd = new SingleSideOnCommand();
@@ -175,13 +169,13 @@ public class UserController extends BaseController {
         		
         		return getSuccessModelAndView(model, map);
             	
-            } else if (responseBody.contains("false")) {
+            } else if (body.isSuccess() == false) {
             	
             	
             	log.info("登入失敗!!");
             	return getFailureModelAndView(model, "登入失敗!! ");
             }
-            */
+            
             
             
         } else {
