@@ -50,16 +50,12 @@
                     }).then(function successCallback(response) {
                         // 檢查是否有檢核錯誤
                         if (response.data.status === 0) {
-                            // 新增一筆資料
-                            //$scope.userDevices.push(response.data.data);
-                            // 清除 Form
-                            //$scope.macAddress = '';
                             
-
-
-                            alert('登入成功~~~~');
+                            if ($scope.status == -1) {
+                            	window.location.href = './applypage.html';
+                                return;
+                            }
                             
-
                         } else if (response.data.status === -1) {
                             alert(response.data.message);
                         } else {
