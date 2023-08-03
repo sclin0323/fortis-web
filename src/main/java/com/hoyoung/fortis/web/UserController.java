@@ -161,11 +161,13 @@ public class UserController extends BaseController {
 
             if (body.isSuccess() == true) {
             	
-            	jwtDecoder(body.getToken());
+            	Map<String, Object> userData = jwtDecoder(body.getToken());
             	
             	HttpSession session = request.getSession();
                 SingleSideOnCommand cd = new SingleSideOnCommand();
                 cd.setCn(cmd.getCn());
+                cd.setGivenName((String)userData.get("name"));
+                cd.setTitle((String)userData.get("departmentName"));
         		session.setAttribute("ssologin", cd);
         		
         		Map<String, Object> map = new HashMap<String, Object>();
