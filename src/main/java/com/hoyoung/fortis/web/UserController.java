@@ -111,14 +111,7 @@ public class UserController extends BaseController {
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, new TrustManager[]{new X509TrustManager() {
             public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {}
-
             public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {}
-
-            
-            
-            
-            
-            
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }
@@ -139,11 +132,8 @@ public class UserController extends BaseController {
 		HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        
-
         // 使用字串格式化將變數插入 JSON 數據
         String jsonBody = String.format("{\"userId\":\"%s\",\"password\":\"%s\",\"remember\":\"true\",\"systemKey\":\"3294dde9518e4fa8b4050ba489f673a1\"}", cmd.getCn(), cmd.getUserPassword());
-
 
         // 創建 HttpEntity，將 JSON 數據和頭部結合
         HttpEntity<String> req = new HttpEntity<>(jsonBody, headers);
@@ -248,14 +238,8 @@ public class UserController extends BaseController {
 
 		// 新增 Fortinet : User Device and Group
 		try {
-			PythonResponse r1 = restTemplateService.editConfigUserDevice(cmd.getDeviceName(), cmd.getMacAddress());
-			// 檢查回傳的資料，使否出現網路卡號存在失敗
-			//if (restTemplateService.validErrorCode(r1, -15) == false) {
-			//	return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
-			//}
+			restTemplateService.editConfigUserDevice(cmd.getDeviceName(), cmd.getMacAddress());
 			restTemplateService.appendConfigUserDeviceGroups(cmd.getDeviceName(), cmd.getDeviceGroup());
-
-			restTemplateService.reenableSystemInterface();
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("連線設備執行指令失敗!! ", e);
@@ -283,11 +267,7 @@ public class UserController extends BaseController {
 		}
 
 		try {
-			PythonResponse r1 = restTemplateService.editConfigUserDevice(cmd.getDeviceName(), cmd.getMacAddress());
-			// 檢查回傳的資料，使否出現網路卡號存在失敗
-			//if (restTemplateService.validErrorCode(r1, -15) == false) {
-			//	return getFailureModelAndView(model, "該網卡網路設備已經存在，新增失敗。 [Return code -15]");
-			//}
+			restTemplateService.editConfigUserDevice(cmd.getDeviceName(), cmd.getMacAddress());
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("連線設備執行指令失敗!! ", e);
@@ -313,9 +293,8 @@ public class UserController extends BaseController {
 		System.out.println(logUid+" "+logName);
 		
 		try {
-			restTemplateService.unselectConfigUserDeviceGroups(deviceName, deviceGroup);
-			restTemplateService.deleteConfigUserDevice(deviceName);
-			restTemplateService.reenableSystemInterface();
+			//restTemplateService.unselectConfigUserDeviceGroups(deviceName, deviceGroup);
+			//restTemplateService.deleteConfigUserDevice(deviceName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("連線設備執行指令失敗!! ", e);
