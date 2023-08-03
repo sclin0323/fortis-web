@@ -37,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.hoyoung.fortis.command.LoginResCommand;
 import com.hoyoung.fortis.command.SingleSideOnCommand;
 import com.hoyoung.fortis.command.UserDeviceCommand;
 import com.hoyoung.fortis.dao.SysSetting;
@@ -153,27 +154,41 @@ public class UserController extends BaseController {
         // 處理回應
         if (res.getStatusCode().is2xxSuccessful()) {
             String responseBody = res.getBody();
-            System.out.println("Response: " + responseBody);
+            Gson gson = new Gson();
+            LoginResCommand loginResCommand = gson.fromJson(responseBody, LoginResCommand.class);
             
-            HttpSession session = request.getSession();
-            SingleSideOnCommand cd = new SingleSideOnCommand();
-            cd.setCn("01101");
-    		session.setAttribute("ssologin", cd);
-    		
-    		Map<String, Object> map = new HashMap<String, Object>();
-    		
-    		
-    		
-    		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    		return getSuccessModelAndView(model, map);
+            
+            log.info("token:"+loginResCommand.getToken());
+            log.info("success:"+loginResCommand.getSuccess());
+            
+            if (loginResCommand.getSuccess() == true) {
+            	
+            	HttpSession session = request.getSession();
+                SingleSideOnCommand cd = new SingleSideOnCommand();
+                cd.setCn(cmd.getCn());
+        		session.setAttribute("ssologin", cd);
+        		
+        		Map<String, Object> map = new HashMap<String, Object>();
+        		
+        		return getSuccessModelAndView(model, map);
+            	
+            } else if (loginResCommand.getSuccess() == false) {
+            	
+            	
+            	log.info("登入失敗!!");
+            	return getFailureModelAndView(model, "登入失敗!! ");
+            }
+            
             
         } else {
-            System.err.println("POST request failed with status code: " + response);
+
             
-            log.info("BBBBBBBBBBBBBBBBBBBBBBBBBB");
-            
+            log.info("登入失敗!!");
             return getFailureModelAndView(model, "登入失敗!! ");
         }
+        
+        log.info("登入失敗!!");
+        return getFailureModelAndView(model, "登入失敗!! ");
 
 
 	}
