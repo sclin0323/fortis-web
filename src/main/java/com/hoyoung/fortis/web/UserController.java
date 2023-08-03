@@ -161,10 +161,16 @@ public class UserController extends BaseController {
     		session.setAttribute("ssologin", cd);
     		
     		Map<String, Object> map = new HashMap<String, Object>();
+    		
+    		
+    		
+    		log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     		return getSuccessModelAndView(model, map);
             
         } else {
             System.err.println("POST request failed with status code: " + response);
+            
+            log.info("BBBBBBBBBBBBBBBBBBBBBBBBBB");
             
             return getFailureModelAndView(model, "登入失敗!! ");
         }
