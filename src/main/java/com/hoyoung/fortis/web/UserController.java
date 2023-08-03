@@ -149,13 +149,21 @@ public class UserController extends BaseController {
         
         // 發送 POST 請求，並取得回應
         String url = "https://ncutuni.ncut.edu.tw/api/login";
+        
+        log.info("1111111111111111111111111111111");
         ResponseEntity<String> res = restTemplate.postForEntity(url, req, String.class);
+        
+        log.info("222222222222222222");
         
         // 處理回應
         if (res.getStatusCode().is2xxSuccessful()) {
+        	
+            log.info("33333333333333333333333333");
             String responseBody = res.getBody();
             Gson gson = new Gson();
             LoginResCommand loginResCommand = gson.fromJson(responseBody, LoginResCommand.class);
+            
+            log.info("444444444444444444444444444");
             
             
             log.info("token:"+loginResCommand.getToken());
