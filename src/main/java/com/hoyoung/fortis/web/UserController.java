@@ -148,20 +148,15 @@ public class UserController extends BaseController {
         
         // 發送 POST 請求，並取得回應
         String url = "https://ncutuni.ncut.edu.tw/api/login";
-        
-        log.info("1111111111111111111111111111111");
         ResponseEntity<String> res = restTemplate.postForEntity(url, req, String.class);
-        
-        log.info("222222222222222222");
         
         // 處理回應
         if (res.getStatusCode().is2xxSuccessful()) {
         	
-            log.info("33333333333333333333333333");
+        	
             String responseBody = res.getBody();
            
-            
-            log.info(responseBody);
+            log.info(new String(responseBody.getBytes("ISO-8859-1"), "UTF-8"));
             
             
             if (responseBody.contains("true")) {
