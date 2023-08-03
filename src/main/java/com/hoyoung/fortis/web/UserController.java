@@ -112,6 +112,11 @@ public class UserController extends BaseController {
 
             public void checkServerTrusted(X509Certificate[] x509Certificates, String s) {}
 
+            
+            
+            
+            
+            
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }
