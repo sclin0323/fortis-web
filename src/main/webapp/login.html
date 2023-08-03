@@ -38,8 +38,8 @@
                             'Content-Type': 'application/json'
                         },
                         data: {
-                            userId: '01101',
-                            password: 'ncut01101'
+                        	cn: $scope.cn,,
+                            userPassword: $scope.userPassword
 
                         }
                     }).then(function successCallback(response) {
@@ -103,16 +103,16 @@
                             <legend>
                                 <h3><p class="text-center">校園無線網路網卡登記系統</p></h3></legend>
                             <div class="form-group">
-                                <label class="col-md-2 col-md-offset-3 control-label">帳號 ID</label>
+                                <label class="col-md-2 col-md-offset-3 control-label">帳號</label>
                                 <div class="col-md-3">
-                                    <input ng-model="applicantId" class="form-control" type="text" required>
+                                    <input ng-model="cn" class="form-control" type="text" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-2 col-md-offset-3 control-label">帳號 密碼</label>
+                                <label class="col-md-2 col-md-offset-3 control-label">密碼</label>
                                 <div class="col-md-3">
-                                    <input ng-model="applicantName" class="form-control" type="text" required>
+                                    <input ng-model="userPassword" class="form-control" type="text" required>
                                 </div>
                             </div>
 

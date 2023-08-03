@@ -98,8 +98,11 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public @ResponseBody ModelAndView login(ModelMap model, HttpServletRequest request, HttpServletResponse response, @RequestBody UserDeviceCommand cmd) throws NoSuchAlgorithmException, KeyManagementException, Exception{
+	public @ResponseBody ModelAndView login(ModelMap model, HttpServletRequest request, HttpServletResponse response, @RequestBody SingleSideOnCommand cmd) throws NoSuchAlgorithmException, KeyManagementException, Exception{
 		
+		
+		log.info("cn:"+cmd.getCn());
+		log.info("password:"+cmd.getUserPassword());
 
 		
 		// 忽略 SSL 驗證
@@ -130,8 +133,10 @@ public class UserController extends BaseController {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         
-        // 設定 JSON 數據
-        String jsonBody = "{\"userId\":\"01101\",\"password\":\"ncut01101\",\"remember\":\"true\",\"systemKey\":\"3294dde9518e4fa8b4050ba489f673a1\"}";
+
+        // 使用字串格式化將變數插入 JSON 數據
+        String jsonBody = String.format("{\"userId\":\"%s\",\"password\":\"%s\",\"remember\":\"true\",\"systemKey\":\"3294dde9518e4fa8b4050ba489f673a1\"}", cmd.getCn(), cmd.getUserPassword());
+
 
         // 創建 HttpEntity，將 JSON 數據和頭部結合
         HttpEntity<String> req = new HttpEntity<>(jsonBody, headers);
@@ -149,15 +154,16 @@ public class UserController extends BaseController {
             SingleSideOnCommand cd = new SingleSideOnCommand();
             cd.setCn("01101");
     		session.setAttribute("ssologin", cd);
+    		
+    		Map<String, Object> map = new HashMap<String, Object>();
+    		return getSuccessModelAndView(model, map);
             
         } else {
             System.err.println("POST request failed with status code: " + response);
+            
+            return getFailureModelAndView(model, "登入失敗!! ");
         }
 
-
-		Map<String, Object> map = new HashMap<String, Object>();
-
-		return getSuccessModelAndView(model, map);
 
 	}
 
