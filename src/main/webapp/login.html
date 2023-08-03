@@ -28,11 +28,6 @@
             return {
   
                 gotologin: function($scope, $http) {
-                	// 檢查是否達新增上限
-		            //if ($scope.userDevices.length >= $scope.deviceLimit) {
-		            //    alert('申請數量已達上限。');
-		            //    return;
-		            //}
                 
                     // Post Add by Ajax
                     jQuery('#ajaxWaitingModal').modal("show");
@@ -51,10 +46,9 @@
                         // 檢查是否有檢核錯誤
                         if (response.data.status === 0) {
                             
-                            if ($scope.status == -1) {
-                            	window.location.href = './applypage.html';
-                                return;
-                            }
+                        	alert("goto applypage.html");
+                            window.location.href = './applypage.html';
+                            return;
                             
                         } else if (response.data.status === -1) {
                             alert(response.data.message);
@@ -73,61 +67,6 @@
                     });
                 }
                 
-                
-                /*
-                updateUserDevice: function($scope, $http) {
-                    var deviceName = $scope.userDevices[$scope.updateIndex]['deviceName'];
-                    var deviceGroup = $scope.userDevices[$scope.updateIndex]['deviceGroup'];
-                    // 檢查網卡是否有修改
-                    if ($scope.macAddress.toLowerCase() == $scope.userDevices[$scope.updateIndex]['macAddress']) {
-                        alert('網卡沒有異動，請重新確認!');
-                        return;
-                    }
-
-                    // Post Update by Ajax
-                    jQuery('#ajaxWaitingModal').modal("show");
-                    $http({
-                        method: 'PUT',
-                        url: '/web/user/update',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        data: {
-                            deviceGroup: deviceGroup,
-                            updUid: $scope.applicantId,
-                            updName: $scope.applicantName,
-                            deviceName: deviceName,
-                            applicantId: $scope.applicantId,
-                            applicantName: $scope.applicantName,
-                            macAddress: $scope.macAddress.toLowerCase()
-
-                        }
-                    }).then(function successCallback(response) {
-                        // 檢查是否有檢核錯誤
-                        if (response.data.status === 0) {
-                            // 更新資料
-                            $scope.userDevices[$scope.updateIndex] = response.data.data;
-                            // 清除 Form
-                            $scope.macAddress = '';
-                            // 切換回 新增 模式
-                            $scope.setAddMode();
-                        } else if (response.data.status === -1) {
-                            alert(response.data.message);
-                        } else {
-                            alert(response);
-                        }
-                        // 關閉等待視窗
-                        jQuery('#ajaxWaitingModal').modal("hide");
-
-                    }, function errorCallback(response) {
-                        alert("執行發生錯誤!!");
-                        var myWindow = window.open("", "", "width=600,height=300", false);
-                        myWindow.document.write(JSON.stringify(response.data));
-                        // 關閉等待視窗
-                        jQuery('#ajaxWaitingModal').modal("hide");
-                    });
-                }
-                */
             }
         });
 
@@ -135,14 +74,8 @@
 
         // Submit 登入
         $scope.submit = function() {
-
-            alert('網卡格式有問題，請重新確認。');
-
-
             userService.gotologin($scope, $http);
-
             return;
-
         }
     });
 
