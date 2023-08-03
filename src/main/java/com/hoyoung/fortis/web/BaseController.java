@@ -138,7 +138,7 @@ public abstract class BaseController {
 	// 隨機 選取一個 Device Group
 	protected String getDeviceGroupByRandom() {
 		Random generator = new Random(); 
-		int i = generator.nextInt(10);
+		int i = generator.nextInt(30);
 		
 		return "none-auth-group-"+i;
 	}
