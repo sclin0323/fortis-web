@@ -211,6 +211,7 @@ public class UserController extends BaseController {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
 		String text = date.format(formatter);
 		cmd.setDeviceName(cmd.getApplicantId() + "-" + text);
+		
 		// 建立 Device Group
 		cmd.setDeviceGroup(getDeviceGroupByRandom());
 
