@@ -27,9 +27,6 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 
 	@Value("${fortis_wspy.urlPrefix}")
 	public String urlPrefix;
-	
-	// public String urlPrefix = "http://140.128.71.35:8000/fortinet/"; // 原系統
-	// public String urlPrefix = "http://140.128.71.36:8000/fortinet/"; // 訪客系統
 
 	@Autowired(required = true)
 	protected FortisDAO fortisDAO;
@@ -52,38 +49,54 @@ public class RestTemplateServiceImpl implements RestTemplateService {
 		String command = "conf vdom \n edit wireless-0 \n config system interface \n edit port34 \n set device-identification disable \n set device-identification enable \n end \n exit \n";
 		return sendRequestToFortinet(command);
 	}
-	
+
 	// For Config User Device
 	@Override
 	public PythonResponse editConfigUserDevice(String deviceName, String macAddress) {
 		
-		//String command = "conf vdom \n edit wireless-0 \n config firewall address \n edit " + deviceName + " \n set type mac \n set start-mac " + macAddress + "\n next \n end \n";
+		// system1 
+		String command = "conf vdom \n edit wireless-0 \n config firewall address \n edit " + deviceName + " \n set type mac \n set macaddr " + macAddress + "\n end \n end \n";
 
-		String command = "conf vdom \n edit wireless-0 \n config firewall address \n edit " + deviceName + " \n set type mac \n set start-mac " + macAddress + " \n set end-mac "+macAddress+" \n next \n end \n";
-
-
+		// system2
+		//String command = "config firewall address \n edit " + deviceName + " \n set type mac \n set macaddr " + macAddress + "\n end \n";
+		
 		return sendRequestToFortinet(command);
 	}
 
 	@Override
 	public PythonResponse appendConfigUserDeviceGroups(String deviceName, String deviceGroup) {
+		
+		// system1
+		String command = "conf vdom \n edit wireless-0 \n config firewall addrgrp \n edit " + deviceGroup + " \n append member " + deviceName + " \n end \n end \n exit \n";
 
-		String command = "conf vdom \n edit wireless-0 \n config firewall addrgrp \n edit " + deviceGroup + " \n append member " + deviceName + " \n next \n end \n end \n exit \n";
-
+		// system2
+		//String command = "config firewall addrgrp \n edit "+deviceGroup+" \n append member "+deviceName+" \n end \n";
 
 		return sendRequestToFortinet(command);
 	}
 
 	@Override
 	public PythonResponse unselectConfigUserDeviceGroups(String deviceName, String deviceGroup) {
-		String command = "conf vdom \n edit wireless-0 \n config firewall addrgrp \n edit " + deviceGroup + " \n unselect member " + deviceName + " \n next \n end \n end \n exit \n";
+		
+		// system1
+		String command = "conf vdom \n edit wireless-0 \n config firewall addrgrp \n edit " + deviceGroup + " \n unselect member " + deviceName + " \n end \n end \n exit \n";
+
+		// system2
+		//String command = "config firewall addrgrp \n edit " + deviceGroup + " \n unselect member " + deviceName + " \n end \n";
+
 
 		return sendRequestToFortinet(command);
 	}
 
 	@Override
 	public PythonResponse deleteConfigUserDevice(String deviceName) {
+		
+		// system1
 		String command = "conf vdom \n edit wireless-0 \n config firewall address \n delete " + deviceName + " \n end \n end \n exit";
+
+		// system2
+		//String command = "config firewall address \n delete " + deviceName + " \n end \n";
+
 
 		return sendRequestToFortinet(command);
 	}
