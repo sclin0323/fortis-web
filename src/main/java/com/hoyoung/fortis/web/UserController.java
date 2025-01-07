@@ -130,7 +130,7 @@ public class UserController extends BaseController {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // 使用字串格式化將變數插入 JSON 數據
-        String jsonBody = String.format("{\"UserId\":\"%s\",\"password\":\"%s\",\"remember\":\"true\",\"systemKey\":\"3294dde9518e4fa8b4050ba489f673a1\"}", cmd.getCn(), cmd.getUserPassword());
+        String jsonBody = String.format("{\"UserId\":\"%s\",\"password\":\"%s\",\"systemKey\":\"3294dde9518e4fa8b4050ba489f673a1\"}", cmd.getCn(), cmd.getUserPassword());
 
         // 創建 HttpEntity，將 JSON 數據和頭部結合
         HttpEntity<String> req = new HttpEntity<>(jsonBody, headers);
