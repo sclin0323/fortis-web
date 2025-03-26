@@ -344,20 +344,15 @@
 			</plugin>
 
 			<plugin>
-    <groupId>org.eclipse.jetty</groupId>
-    <artifactId>jetty-maven-plugin</artifactId>
-    <version>9.3.10.v20160621</version>
-    <configuration>
-        <connectors>
-            <connector implementation="org.eclipse.jetty.server.ssl.SslSocketConnector">
-                <port>8443</port>
-                <keystore>keystore.jks</keystore>
-                <password>yourpassword</password>
-                <keyPassword>yourpassword</keyPassword>
-            </connector>
-        </connectors>
-    </configuration>
-</plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>9.3.10.v20160621</version>
+				<configuration>
+					<httpConnector>
+						<port>8080</port>
+					</httpConnector>
+				</configuration>
+			</plugin>
 
 
 		</plugins>
