@@ -349,15 +349,12 @@
 				<version>9.3.10.v20160621</version>
 				<configuration>
 					<httpConnector>
-						<port>8080</port> <!-- 保留 HTTP 端口，可選 -->
+						<port>8080</port>
 					</httpConnector>
 					<sslConnector>
-						<port>8443</port> <!-- 設定 HTTPS 端口 -->
+						<port>8443</port>
 						<keyStorePath>${project.basedir}/keystore.p12</keyStorePath>
 						<keyStorePassword>abc123</keyStorePassword>
-						<keyManagerPassword>abc123</keyManagerPassword>
-						<trustStorePath>${project.basedir}/keystore.p12</trustStorePath>
-						<trustStorePassword>abc123</trustStorePassword>
 						<keyStoreType>PKCS12</keyStoreType>
 					</sslConnector>
 				</configuration>
